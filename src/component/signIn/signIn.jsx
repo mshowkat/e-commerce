@@ -1,8 +1,9 @@
 import React from "react";
 import FormInput from "../form-input/formInput";
 import CusButton from "../button/button.jsx";
-import { signInWithGoogle } from "../../firebase/firebaseUtils";
+import { auth, signInWithGoogle } from "../../firebase/firebaseUtils";
 import './signIn.scss'
+
 
 class SignIn extends React.Component {
     constructor (props) {
@@ -14,18 +15,24 @@ class SignIn extends React.Component {
         }
     }//constructor ends here
 
-    handleSubmit = event => {
-        event.preventDefault()
+    handleSubmit = async event => {
+        event.preventDefault();
 
-        this.setState=({email: '', password: ''})
-    }
+        const { email, password } = this.state;
+
+        try {
+            await auth.signInWithEmailAndPassword(email, password);
+            this.setState({ email: '', password: '' });
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     handleChange = event => {
-        const {value, name} = event.target
+        const { value, name } = event.target;
 
-        this.setState({[name]: value})
-    }
-
+        this.setState({ [name]: value });
+    };
     render () {
         return (
             <div className='sing-in'>
